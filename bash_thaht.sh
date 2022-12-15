@@ -1,6 +1,8 @@
 #!/bin/bash
 source create_c_project.sh
 source create_cpp_project.sh
+source pc_info.sh
+source mouli_c.sh
 
 #declare variable to get result of th selected option with yad
 OUTPUT_OPTION=""
@@ -8,7 +10,7 @@ OUTPUT_OPTION=""
 #First Window Presentation of options
 starting_window() {
 	#declare option tab for yad
-	option=( "Init C Project" "Init C++ Project" "Get PC Info" "Extra")
+	option=( "Init C Project" "Init C++ Project" "Get PC Info" "Faute de norme Mouli (C)")
 	declare -i id=0
 
 	OUTPUT_OPTION=$(for element in "${option[@]}"
@@ -27,7 +29,7 @@ starting_window() {
 		--button=Cancel:1 --button=gtk-yes:0 \
 		--radiolist --column="Select" --column="Id" --column="Option" \
 		--print-column="2" --separator=" ")
-	echo ${option[@]}
+	# echo ${option[@]}
 }
 
 #Select if he realy wants to leave
@@ -62,10 +64,10 @@ check_choice() {
 			exit 1
 			;;
 		3)
-			echo "3"
+			pc_info
 			;;
 		4)
-			echo "4"
+			mouli_c
 			;;
 		*)
 			main_loop
@@ -75,6 +77,7 @@ check_choice() {
 }
 
 main_loop() {
+	export GTK_THEME="Adwaita-dark"
 	starting_window
 	check_choice $OUTPUT_OPTION
 }

@@ -1,3 +1,4 @@
+#!/bin/bash
 #declare name project
 
 BINARY_NAME=""
