@@ -21,20 +21,18 @@ starting_window() {
 			echo "${element}"
 		done | yad \
 		--center \
-		--width="500" \
-        --height="400" \
+		--geometry=500x400+0+0 \
 		--list \
 		--title="(YPA) $(date +%Hh%M)" \
 		--text="Your Project Assistant\n" \
-		--button=Cancel:1 --button=gtk-yes:0 \
+		--button=QUIT:1 --button=gtk-yes:0 \
 		--radiolist --column="Select" --column="Id" --column="Option" \
 		--print-column="2" --separator=" ")
-	# echo ${option[@]}
 }
 
 #Select if he realy wants to leave
 leave_start_window() {
-	yad --splash --question --text="You sure you want to stop creating your project ?" --button=No:0 --button=Yes:1
+	yad --center --geometry=500x400+0+0 --text-align=center --question --text="You sure you want quit YAP ?" --button=No:0 --button=Yes:1
 	if [ $? == 1 ]; then
 		if [ $1 == "ok" ]; then
     		notify-send "Left safely"
@@ -44,6 +42,7 @@ leave_start_window() {
 	else
 		main_loop
 	fi
+	clear
     exit 1;
 }
 

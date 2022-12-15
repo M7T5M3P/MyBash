@@ -40,7 +40,7 @@ modify_file() {
     cp coding-style-reports.log tmp
     
     sed -i "s/hint:/hint/g" ./tmp
-    sed -i "s/:[A-Z]/C/g" ./tmp
+    sed -i "s/:[A-Z]/ C/g" ./tmp
     sed -i "s/:\ /<\/span>/g" ./tmp
     sed -i "s/^./$TAB$PURPLE <b>./g" ./tmp
     sed -i "s/:/<\/b>$CLOSE$TAB$ORANGE LIGNE =  /g" ./tmp
@@ -52,30 +52,52 @@ modify_file() {
     MINOR=$(cat tmp | grep -o MINOR | wc -l)
     INFO=$(cat tmp | grep -o INFO | wc -l)
     message=$(message_norm $MAJOR $MINOR $INFO)
-    yad --form --center --button="YPA Home":0 --field="\
+    yad --form --center --button="YPA Home":0 --button="Reload Norm":1 --field="\
     \n\n$CENTER$RED Majors  :  $MAJOR$CLOSE$TAB|$TAB$Y8 Minors  :  $MINOR$CLOSE$TAB|$TAB$CYAN Infos  :  $INFO$CLOSE\n\n
     $CENTER$message\n\n
     $TAB Prototype =>$PURPLE FILE $CLOSE$TAB|$TAB$ORANGE LIGNE $CLOSE$TAB|$TAB${RED}FA$CLOSE${ORANGE}UL$CLOSE${CYAN}TS $CLOSE$TAB|$TAB$WHITE TYPE OF FAULTS $CLOSE\n\n
     $norm_file\n\n":LBL --geometry 650x350 --scroll
+    case $? in
+        0)
+            clear
+            rm -f ./tmp ./coding-style-reports.log
+            main_loop;;
+        1)
+            clear
+            rm -f ./tmp ./coding-style-reports.log
+            check_norm;;
+    esac
+}
+
+#Function check sudo password
+sudo_password() {
+    password=$(yad --entry --entry-label="Enter sudo password" --hide-text)
+    echo $password | sudo -S ~/coding-style-checker/coding-style.sh $1 .
+    # if [ -f coding-style-reports.log ]; then
+    #     modify_file
+    # else
+    #     sudo_password $1
+    # fi
+    
 }
 
 #Function to create file with norm errors if they are
 check_norm() {
-    file=$(yad --form --field="Folder List:DIR" .)
-    ~/coding-style-checker/coding-style.sh $file .
-
+    DIRECTORY=$(yad --geometry=500x400+0+0 --button="Next":1 --form --field="Folder List:DIR" . | sed 's/|//')
+    # cd $DIRECTORY
+    # rm -f ./tmp ./coding-style-reports.log
+    # cd -
+    echo $DIRECTORY
+    #sudo_password $DIRECTORY
 }
 
 #Function start mouli window
 mouli_c() {
     found=$(find ~ -name coding-style-checker)
     if [ -z $found ]; then
-        echo "hi2" 
         cd ~
         git clone https://github.com/Epitech/coding-style-checker.git
         cd -
     fi
-    modify_file
-    #check_norm
+    check_norm
 }
-mouli_c
